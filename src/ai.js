@@ -13,9 +13,23 @@ const ai = getAI(app, { backend: new GoogleAIBackend() });
 // documented cloud case). Threshold comes from Remote Config (see config.js).
 // Returns { model, mode } — the mode is carried alongside because the SDK
 // model object does not document a public `.mode` accessor.
+//
+// SDK GOTCHA (firebase 12.19.0 / @firebase/ai 2.16.0, verified in
+// node_modules/firebase/firebase-ai.js): when `mode` is set, the SDK IGNORES
+// a top-level `model` and uses `inCloudParams || { model:
+// "gemini-2.5-flash-lite" }` for the cloud path. That default model is
+// retired for new users (Google returns 404: "no longer available to new
+// users, use models/gemini-3.5-flash-lite"), so the cloud model MUST be
+// passed via inCloudParams. Verified 25 Nov 2026 after a live 404.
 export function modelFor({ longInput, hasImage }) {
   const mode = longInput || hasImage ? InferenceMode.PREFER_IN_CLOUD : InferenceMode.PREFER_ON_DEVICE;
-  return { model: getGenerativeModel(ai, { model: "gemini-2.5-flash", mode }), mode };
+  return {
+    model: getGenerativeModel(ai, {
+      mode,
+      inCloudParams: { model: "gemini-3.5-flash-lite" },
+    }),
+    mode,
+  };
 }
 
 // MUST be called after/on a user interaction (button click) and BEFORE any
