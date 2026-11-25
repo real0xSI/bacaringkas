@@ -185,3 +185,32 @@ Sources actually fetched (not guessed):
   "free within usage limits" — no numbers published on the pages fetched).
 - The quota-form URL itself (forms.gle link on the Devpost page) — not copied here; open
   it from the Devpost page, do not guess it.
+
+## 14. Cloud model fix — SDK `inCloudParams` gotcha (verified 25 Nov 2026 ~08:47 EST)
+
+- **Symptom (browser-verified 25 Nov 08:30 EST, twice):** app calls AI, Google
+  returns 404: "This model models/gemini-2.5-flash-lite is no longer available
+  to new users. Please update your code to use models/gemini-3.5-flash-lite."
+- **Root cause (verified in the installed SDK source,
+  `node_modules/firebase/firebase-ai.js`, firebase 12.19.0 / @firebase/ai
+  2.16.0):** `getGenerativeModel()` with a `mode` set IGNORES a top-level
+  `model` and uses `inCloudParams || { model: "gemini-2.5-flash-lite" }` for
+  the cloud path. The app passed `{ model: "gemini-2.5-flash", mode }`, so the
+  cloud call always went to the retired `gemini-2.5-flash-lite`. The string
+  also ships inside the SDK bundle itself — it is the SDK's default, not app
+  code (the app's own `src/` never contained `gemini-2.5-flash-lite`).
+- **Fix (`src/ai.js` `modelFor()`):** pass the cloud model via
+  `inCloudParams: { model: "gemini-3.5-flash-lite" }` (Google's own
+  recommendation in the error). On-device Nano path untouched.
+- **Verified live:** Node end-to-end test mirroring the app flow (anonymous
+  sign-in → `PREFER_ON_DEVICE` → `generateContent`) returned a genuine
+  4-sentence / 518-char English summary in 1791 ms; Firestore save + list
+  (`where uid == own uid`, no orderBy) also OK. Redeployed to
+  https://bacaringkas.pages.dev (HTTP 200, new bundle `index-BCbMLClB.js`
+  contains `gemini-3.5-flash-lite` + `inCloudParams`).
+- **History fix in the same change:** `firestore.rules` splits `read` into
+  `get`/`list` (combined `read` leaning on `resource.data.uid` fails list
+  evaluation); `src/history.js` drops `orderBy(createdAt)` (that plus
+  `where(uid == ...)` needs a composite index in the console) and sorts
+  client-side instead. Rules file must still be pasted in the Firebase
+  console (Firestore > Rules > Publish) — no Firebase CLI auth in this VM.
