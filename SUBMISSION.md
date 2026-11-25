@@ -5,10 +5,19 @@ Deadline: **Senin 30 Nov 2026 14:00 PT = 17:00 EST = Selasa 1 Des 2026 05:00 WIB
 ## Checklist
 
 - [ ] Akun Devpost dibuat + registrasi ke hackathon
-- [ ] Repo publik di GitHub (akun real0xSI) — push folder ini, LICENSE terlihat di halaman repo
+- [x] Repo publik di GitHub (akun real0xSI) — **DONE 25 Nov 2026 ~12:41 EST:
+      https://github.com/real0xSI/bacaringkas (public, main, 19 files, MIT
+      licence visible, verified HTTP 200 + secret sweep clean)**
 - [ ] Firebase project dibuat + aplikasi jalan di URL hosting (SETUP.md)
 - [ ] "Nano test input" lolos di Chrome desktop — badge on-device terekam (RESEARCH.md §8)
 - [ ] Video demo ≤3 menit, publik di YouTube, subtitle/narasi Inggris
+      — **STATUS 25 Nov 2026: rehearsal pipeline DONE (34.1s, Xvfb + Chromium +
+      ffmpeg + CDP, file video/narration-en-energetic-male.mp3 32.2s siap);
+      video submission BELUM BISA direkam dari VM — Chromium VM tidak bisa
+      mencapai internet publik (generativelanguage.googleapis.com gagal
+      ERR_TUNNEL_CONNECTION_FAILED) + belum ada Firebase project. Rute yang
+      bisa: rekam di Chrome HP Principal, atau cloud browser untuk screenshot.
+      Detail: video/VIDEO-STATUS.md + RESEARCH.md §12. JANGAN palsukan hasil.**
 - [ ] Text description (Inggris) diisi di form Devpost
 - [ ] Platform dipilih: **Web**
 - [ ] Submit sebelum deadline — draft boleh disimpan dulu, submit final jangan mepet
@@ -47,3 +56,8 @@ Deadline: **Senin 30 Nov 2026 14:00 PT = 17:00 EST = Selasa 1 Des 2026 05:00 WIB
 | 2:20–3:00 | Arsitektur singkat (diagram) + penutup |
 
 Rekam di Chrome desktop sungguhan — badge on-device adalah bukti utama hybrid inference.
+> CATATAN 25 Nov 2026: dari VM ini TIDAK BISA — Chromium VM tidak mencapai
+> internet publik (proxy blokir generativelanguage.googleapis.com) dan Nano
+> tidak tersedia di browser cloud. Rute yang bisa: Chrome HP Principal
+> (cloud fallback jalan, Nano tidak) atau cloud browser untuk screenshot.
+> Lihat video/VIDEO-STATUS.md + RESEARCH.md §12. Jangan palsukan hasil.
