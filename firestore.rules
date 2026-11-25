@@ -2,11 +2,23 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     // History: each anonymous user reads/writes ONLY their own docs.
+    //
+    // NOTE: `read` is split into get/list on purpose. A combined
+    // `allow read` rule that leans on resource.data.uid fails for LIST
+    // queries: at list-eval time the rule is checked against the query
+    // (where uid == request.auth.uid), not against a single loaded
+    // document, so the combined form denies the list and the app shows
+    // "Riwayat belum bisa dimuat". Splitting get/list fixes it.
+    // The matching app query is in src/history.js (where uid == own uid).
     match /results/{docId} {
-      allow read, write: if request.auth != null
+      allow get: if request.auth != null
+        && request.auth.uid == resource.data.uid;
+      allow list: if request.auth != null
         && request.auth.uid == resource.data.uid;
       allow create: if request.auth != null
         && request.auth.uid == request.resource.data.uid;
+      allow update, delete: if request.auth != null
+        && request.auth.uid == resource.data.uid;
     }
     match /{document=**} {
       allow read, write: if false;
