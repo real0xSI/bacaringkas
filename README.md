@@ -24,9 +24,10 @@
 - Vite + vanilla JS (no framework — keeps the demo auditable)
 - `firebase` JS SDK **v12.5.0+** (`firebase/ai` — hybrid inference needs ≥ 12.5.0)
 - Firebase AI Logic, Gemini Developer API backend (free tier, no billing)
-- Firebase App Check (required by AI Logic; debug provider for localhost)
+- Firebase App Check (required by AI Logic; debug token path — see SETUP.md §4)
 - Firestore (history), Anonymous Auth, Remote Config (prompt templates)
-- Firebase Hosting for the demo URL
+- Demo URL: **Cloudflare Pages** — https://bacaringkas.pages.dev
+  (Firebase Hosting deploy blocked in this VM: no Firebase CLI auth; see SETUP.md §6)
 
 ## Quick start (local)
 
@@ -58,8 +59,20 @@ firestore.rules       history is per-anonymous-user, read/write own docs only
 
 - **Repo publik: https://github.com/real0xSI/bacaringkas** (DONE 25 Nov 2026
   ~12:41 EST — public, main, 19 files, MIT, verified HTTP 200).
-- Firebase project NOT created yet, no credentials in this repo — needs a
-  browser + Principal's Google account (SETUP.md steps 1–2).
+- **Firebase project DONE 25 Nov 2026 ~13:00 EST: `bacaringkas-29c27`** (Spark $0,
+  Analytics OFF, no billing, no Vertex) — web app `bacaringkas-web`, Anonymous Auth
+  ON, Firestore (default) nam5 production mode, Remote Config v1 published.
+  `.env` wired from the console config; `npm run build` succeeds (3.04s).
+- **Live demo: https://bacaringkas.pages.dev** (Cloudflare Pages, deployment
+  `61281cee`, verified HTTP 200 + real HTML + asset JS 200, 25 Nov ~13:06 EST).
+- **⚠️ BLOKIR — App Check debug token belum terdaftar di console.** Endpoint AI
+  Logic menolak tanpa token App Check yang valid (401) dan exchange debug token
+  gagal 403 "App attestation failed" karena token belum terdaftar. Langkah:
+  console > Security > App Check > Apps > Manage debug tokens > Add debug token
+  dengan nilai `VITE_APPCHECK_DEBUG_TOKEN` dari `.env` (jangan commit token itu).
+  Sampai token terdaftar, klik Jalankan akan gagal App Check. Firestore rules
+  juga belum ter-deploy (butuh Firebase CLI auth — tempel `firestore.rules` di
+  console, atau `firebase deploy --only firestore:rules` dari mesin yang login).
 - Demo video: rehearsal pipeline DONE, submission video BLOCKED until the
   Firebase project exists + a real browser can reach Google's AI endpoints
   (this VM's Chromium cannot — see video/VIDEO-STATUS.md + RESEARCH.md §12).
