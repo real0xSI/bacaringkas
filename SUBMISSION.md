@@ -8,7 +8,14 @@ Deadline: **Senin 30 Nov 2026 14:00 PT = 17:00 EST = Selasa 1 Des 2026 05:00 WIB
 - [x] Repo publik di GitHub (akun real0xSI) — **DONE 25 Nov 2026 ~12:41 EST:
       https://github.com/real0xSI/bacaringkas (public, main, 19 files, MIT
       licence visible, verified HTTP 200 + secret sweep clean)**
-- [ ] Firebase project dibuat + aplikasi jalan di URL hosting (SETUP.md)
+- [x] Firebase project dibuat + aplikasi jalan di URL hosting (SETUP.md)
+      — **DONE 25 Nov 2026 ~13:06 EST: project `bacaringkas-29c27` (Spark $0),
+      live di https://bacaringkas.pages.dev (Cloudflare Pages, HTTP 200
+      terverifikasi). ⚠️ Satu langkah console tersisa: daftarkan App Check
+      debug token (`VITE_APPCHECK_DEBUG_TOKEN` dari `.env`) di console >
+      Security > App Check > Manage debug tokens — tanpa itu panggilan AI
+      ditolak (401/403 terverifikasi). Firestore rules juga belum ter-deploy
+      (tempel `firestore.rules` di console).**
 - [ ] "Nano test input" lolos di Chrome desktop — badge on-device terekam (RESEARCH.md §8)
 - [ ] Video demo ≤3 menit, publik di YouTube, subtitle/narasi Inggris
       — **STATUS 25 Nov 2026: rehearsal pipeline DONE (34.1s, Xvfb + Chromium +
