@@ -19,8 +19,9 @@
 
 1. Project settings > Your apps > Add app > Web → catat config-nya.
 2. `cp .env.example .env` lalu isi semua `VITE_FIREBASE_*` dari config tersebut.
-3. App Check > Apps > daftarkan app dengan **reCAPTCHA Enterprise** → isi
-   `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY` di `.env`.
+3. App Check: **tidak ada site key reCAPTCHA Enterprise yang dibuat**
+   (25 Nov 2026) — dipakai jalur debug token, lihat §4. Kalau nanti dibuat,
+   isi `VITE_RECAPTCHA_ENTERPRISE_SITE_KEY` di `.env`.
 
 ## 3. Aktifkan produk pendukung (console, gratis)
 
@@ -29,12 +30,24 @@
 - **Remote Config** > buat parameter berikut (atau biarkan default di `src/config.js`):
   `long_text_threshold_chars` (=4000), `prompt_summarize`, `prompt_explain`,
   `prompt_quiz`, `prompt_image`.
+  > UPDATE 25 Nov 2026: Remote Config v1 SUDAH terbit dengan `minChars=100`,
+  > `maxChars=5000`, `minJaccard/minCosine/minOverlap=0.3` — nama-nama ini
+  > TIDAK dibaca `src/config.js` (yang dibaca: `long_text_threshold_chars` +
+  > `prompt_*`), jadi default kode yang berlaku. Tidak merusak apa-apa.
 
-## 4. App Check debug token (localhost saja)
+## 4. App Check debug token (WAJIB — bukan cuma localhost)
 
-1. `npm run dev` → buka http://localhost:5173 → buka DevTools Console.
-2. Salin token dari baris `AppCheck debug token: "..."`.
-3. Console > **Security > App Check > Apps > Manage debug tokens** → Add debug token.
+Endpoint AI Logic MENOLAK request tanpa token App Check yang valid (401
+terverifikasi 25 Nov 2026) dan exchange debug token gagal 403 kalau tokennya
+belum terdaftar. Jadi token ini harus didaftarkan sekali di console — kalau
+tidak, tombol Jalankan di aplikasi akan gagal.
+
+1. Token stabil sudah ada di `.env` sebagai `VITE_APPCHECK_DEBUG_TOKEN`
+   (dibuat 25 Nov 2026; JANGAN commit `.env`, JANGAN taruh token di repo).
+2. Console > **Security > App Check > Apps > Manage debug tokens** → Add debug
+   token → tempel nilai token itu → Save.
+3. (Alternatif localhost saja) `npm run dev` → DevTools Console → salin token
+   dari baris `AppCheck debug token: "..."` → daftarkan dengan cara yang sama.
 4. Refresh halaman. (Token debug diterima di submission — lihat RESEARCH.md §5.)
 
 ## 5. "Nano test input" — uji jalur on-device Gemini Nano (WAJIB desktop Chrome)
@@ -69,6 +82,15 @@ firebase login            # akun Google Principal
 npm run build
 firebase deploy           # Hosting + Firestore rules
 ```
+
+> UPDATE 25 Nov 2026: deploy yang jalan dari VM ini adalah **Cloudflare Pages**
+> (Firebase CLI tidak bisa login tanpa browser): project `bacaringkas`
+> → https://bacaringkas.pages.dev. Deploy ulang: `wrangler pages deploy dist
+> --project-name bacaringkas --branch main` (butuh `CLOUDFLARE_API_TOKEN`).
+> Firestore rules TIDAK ikut ter-deploy lewat Pages — tempel `firestore.rules`
+> di console (Firestore > Rules) atau `firebase deploy --only firestore:rules`
+> dari mesin yang sudah `firebase login`. Sampai rules ter-deploy, simpan
+> riwayat akan gagal permission-denied (alur AI tidak tergantung Firestore).
 
 ## 8. Rekam video demo (VM — pipeline terbukti 25 Nov 2026, lihat RESEARCH.md §12)
 
