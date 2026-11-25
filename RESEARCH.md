@@ -140,7 +140,43 @@ Sources actually fetched (not guessed):
 6. **GitHub repo** — create the public repo under his account (real0xSI) and push this code.
 7. **If he wins**: prize affidavit + W-8BEN tax form within 10 business days of notification.
 
-## 11. NOT verified / open questions
+## 12. Recording findings (VERIFIED live 25 Nov 2026 ~12:41–12:48 EST)
+
+- **Repo public:** https://github.com/real0xSI/bacaringkas (19 files, MIT, main).
+- **VM screen recording WORKS** (Tari method, reproduced): Xvfb :99 1280×720 +
+  managed Chromium `/opt/meta-chromium/chrome` (157.0.8103.81) + ffmpeg x11grab
+  + CDP real clicks (websocket-client) + xdotool cursor. Rehearsal video
+  `video/bacaringkas-rehearsal-2026-11-25.mp4` (34.1s, 1280×720, 30fps).
+- **Managed Chromium needs a WebGL domain policy to start at all:**
+  file `/tmp/webgl-policy.txt` containing exactly `hatch-webgl-all-origins-v1`
+  + trailing newline, plus flags
+  `--hatch-webgl-allowed-domains-file=/tmp/webgl-policy.txt
+  --hatch-webgl-allowed-domains-sha256=<sha256 of the file>`.
+  (A `v1` header + domain list is the other form; `localhost` is rejected as
+  non-registrable. Validate with `--hatch-validate-webgl-allowed-domains --version`.)
+- **localhost is blocked in this Chromium** by Local Network Access checks
+  (`ERR_BLOCKED_BY_LOCAL_NETWORK_ACCESS_CHECKS` for 127.0.0.1:4173, even with
+  `--disable-features=LocalNetworkAccessChecks`). Workaround (same as Tari):
+  build with relative paths (`npx vite build --base ./ --outDir /tmp/...`)
+  and load via `file://` + `--allow-file-access-from-files`. Kiosk mode
+  (`--kiosk`) hides the address bar and the `--no-sandbox` banner.
+- **This Chromium cannot reach public HTTPS at all:** `example.com` AND
+  `generativelanguage.googleapis.com` both fail `ERR_TUNNEL_CONNECTION_FAILED`
+  (egress proxy). Consequence: even with a real Firebase project, a live
+  cloud AI result CANNOT be recorded in this Chromium — the call hangs the
+  same way the rehearsal did. The on-device Nano path is also unavailable
+  here (Prompt API "unavailable", proven 25 Nov). Real routes to a working
+  demo video are in `video/VIDEO-STATUS.md` (Principal's phone Chrome, or a
+  cloud-browser run for stills + a narrated tour).
+- **Rehearsal behavior (dummy config):** UI loads, probe status line reads
+  "On-device tidak tersedia di browser ini — semua request jalan di cloud",
+  paste (311 chars) + language switch to English + real Jalankan click all
+  work, then the run hangs on "Memproses…" (Remote Config / AI call never
+  returns). No fake result was produced or recorded.
+- **Narration ready:** `video/narration-en-energetic-male.mp3` (32.2s, Fish
+  Audio Energetic Male, s2.1-pro-free, English) — mux under the final video.
+
+## 13. NOT verified / open questions
 
 - Devpost **Resources page** (per-platform guides) was not fetched — the main page links
   to it but its URL was not in the fetched text; re-check before finalizing platform docs.
