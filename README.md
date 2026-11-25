@@ -65,14 +65,24 @@ firestore.rules       history is per-anonymous-user, read/write own docs only
   `.env` wired from the console config; `npm run build` succeeds (3.04s).
 - **Live demo: https://bacaringkas.pages.dev** (Cloudflare Pages, deployment
   `61281cee`, verified HTTP 200 + real HTML + asset JS 200, 25 Nov ~13:06 EST).
-- **⚠️ BLOKIR — App Check debug token belum terdaftar di console.** Endpoint AI
-  Logic menolak tanpa token App Check yang valid (401) dan exchange debug token
-  gagal 403 "App attestation failed" karena token belum terdaftar. Langkah:
-  console > Security > App Check > Apps > Manage debug tokens > Add debug token
-  dengan nilai `VITE_APPCHECK_DEBUG_TOKEN` dari `.env` (jangan commit token itu).
-  Sampai token terdaftar, klik Jalankan akan gagal App Check. Firestore rules
-  juga belum ter-deploy (butuh Firebase CLI auth — tempel `firestore.rules` di
-  console, atau `firebase deploy --only firestore:rules` dari mesin yang login).
+- **✅ AI CALL TERVERIFIKASI 25 Nov 2026 ~08:47 EST (Node end-to-end test,
+  mirror alur app):** anonymous sign-in → Firebase AI Logic
+  (GoogleAIBackend, `PREFER_ON_DEVICE`, short English text) → ringkasan
+  asli 4 kalimat / 518 karakter dalam 1791 ms, model cloud
+  **gemini-3.5-flash-lite**. App Check debug token jalan (call lolos).
+  **Riwayat terverifikasi:** Firestore save + load (`where uid == own uid`)
+  OK. Root cause yang diperbaiki: SDK Firebase 12.19.0 mengabaikan `model`
+  top-level kalau `mode` di-set — cloud default-nya `gemini-2.5-flash-lite`
+  (sudah pensiun buat user baru → 404); fix: `inCloudParams: { model:
+  "gemini-3.5-flash-lite" }` di `src/ai.js`. Live deploy terbaru:
+  https://bacaringkas.pages.dev (HTTP 200, bundle baru
+  `index-BCbMLClB.js` berisi `gemini-3.5-flash-lite` + `inCloudParams`,
+  terverifikasi 25 Nov ~08:47 EST).
+- **Langkah console tersisa (bukan blokir — app sudah jalan):** tempel
+  `firestore.rules` terbaru (get/list dipisah) di console > Firestore
+  Database > Rules > Publish, atau `firebase deploy --only firestore:rules`
+  dari mesin yang login. Rules yang live sekarang sudah mengizinkan
+  save+load (terverifikasi via test), jadi ini hardening, bukan blocker.
 - Demo video: rehearsal pipeline DONE, submission video BLOCKED until the
   Firebase project exists + a real browser can reach Google's AI endpoints
   (this VM's Chromium cannot — see video/VIDEO-STATUS.md + RESEARCH.md §12).
