@@ -56,5 +56,11 @@ firestore.rules       history is per-anonymous-user, read/write own docs only
 
 ## Status
 
-Scaffold only — Firebase project NOT created, no credentials in this repo.
-See `RESEARCH.md` for the verified rules and `SUBMISSION.md` for the submit checklist.
+- **Repo publik: https://github.com/real0xSI/bacaringkas** (DONE 25 Nov 2026
+  ~12:41 EST — public, main, 19 files, MIT, verified HTTP 200).
+- Firebase project NOT created yet, no credentials in this repo — needs a
+  browser + Principal's Google account (SETUP.md steps 1–2).
+- Demo video: rehearsal pipeline DONE, submission video BLOCKED until the
+  Firebase project exists + a real browser can reach Google's AI endpoints
+  (this VM's Chromium cannot — see video/VIDEO-STATUS.md + RESEARCH.md §12).
+- Narration ready: video/narration-en-energetic-male.mp3 (32.2s, English).
