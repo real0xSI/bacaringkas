@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BacaRingkas — Ringkas offline, lanjut di cloud</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>BacaRingkas</h1>
+      <p class="tag">Teman baca offline-first. Ringkasan pendek jalan <b>on-device (Gemini Nano)</b> —
+        privat, gratis, tanpa internet. Dokumen panjang &amp; foto halaman dilempar ke <b>cloud Gemini</b>.</p>
+      <p id="deviceStatus" class="status">Mengecek dukungan on-device…</p>
+    </header>
+
+    <section class="card">
+      <label for="inputText">Teks bacaan (tempel di sini)</label>
+      <textarea id="inputText" rows="8" placeholder="Tempel teks bacaan… contoh: paragraf dari buku pelajaran, artikel, atau catatan kuliah."></textarea>
+
+      <label for="imageInput">…atau foto halaman (JPEG/PNG — selalu diproses di cloud)</label>
+      <input id="imageInput" type="file" accept="image/jpeg,image/png" />
+
+      <div class="row">
+        <label for="task">Tugas</label>
+        <select id="task">
+          <option value="summarize">Ringkas — 3–5 kalimat</option>
+          <option value="explain">Jelaskan kata sulit</option>
+          <option value="quiz">Buat kuis — 3 soal pilihan ganda (JSON)</option>
+        </select>
+        <label for="lang">Bahasa hasil</label>
+        <select id="lang">
+          <option value="id">Bahasa Indonesia</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+
+      <!-- One click = the user activation Firebase AI Logic requires before
+           initializeDeviceModel() may run. -->
+      <button id="runBtn" type="button">Jalankan</button>
+      <p id="routeBadge" class="badge" hidden></p>
+      <p id="progress" class="progress" hidden></p>
+    </section>
+
+    <section class="card">
+      <h2>Hasil</h2>
+      <pre id="output">Belum ada hasil. Jalankan satu tugas dulu.</pre>
+      <div class="row">
+        <button id="saveBtn" type="button" disabled>Simpan ke riwayat</button>
+        <button id="copyBtn" type="button" disabled>Salin hasil</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Riwayat (tersimpan di Firestore)</h2>
+      <ul id="history"><li>Belum ada riwayat tersimpan.</li></ul>
+    </section>
+
+    <footer>
+      <p>Dibangun untuk #BuildHybridAI 2026 dengan Firebase AI Logic (hybrid inference).
+        On-device hanya mendukung single-turn text generation — bukan chat.</p>
+    </footer>
+  </main>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
