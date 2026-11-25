@@ -11,11 +11,12 @@ Deadline: **Senin 30 Nov 2026 14:00 PT = 17:00 EST = Selasa 1 Des 2026 05:00 WIB
 - [x] Firebase project dibuat + aplikasi jalan di URL hosting (SETUP.md)
       — **DONE 25 Nov 2026 ~13:06 EST: project `bacaringkas-29c27` (Spark $0),
       live di https://bacaringkas.pages.dev (Cloudflare Pages, HTTP 200
-      terverifikasi). ⚠️ Satu langkah console tersisa: daftarkan App Check
-      debug token (`VITE_APPCHECK_DEBUG_TOKEN` dari `.env`) di console >
-      Security > App Check > Manage debug tokens — tanpa itu panggilan AI
-      ditolak (401/403 terverifikasi). Firestore rules juga belum ter-deploy
-      (tempel `firestore.rules` di console).**
+      terverifikasi). ✅ AI CALL TERVERIFIKASI 25 Nov 2026 ~08:47 EST (Node
+      end-to-end test, mirror alur app): ringkasan asli 4 kalimat / 518
+      karakter dalam 1791 ms, model cloud gemini-3.5-flash-lite; App Check
+      debug token jalan; Firestore save+load OK. Satu langkah console
+      tersisa (hardening, bukan blokir): tempel `firestore.rules` terbaru
+      di console > Firestore Database > Rules > Publish.**
 - [ ] "Nano test input" lolos di Chrome desktop — badge on-device terekam (RESEARCH.md §8)
 - [ ] Video demo ≤3 menit, publik di YouTube, subtitle/narasi Inggris
       — **STATUS 25 Nov 2026: rehearsal pipeline DONE (34.1s, Xvfb + Chromium +
