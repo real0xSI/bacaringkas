@@ -70,7 +70,39 @@ npm run build
 firebase deploy           # Hosting + Firestore rules
 ```
 
-## 7. Cek sebelum submit
+## 8. Rekam video demo (VM — pipeline terbukti 25 Nov 2026, lihat RESEARCH.md §12)
+
+> Rekaman REHEARSAL 25 Nov membuktikan pipeline-nya jalan (Xvfb + Chromium +
+> ffmpeg + CDP). Tapi video SUBMISSION yang nunjukkin hasil AI live BELUM
+> BISA direkam dari VM ini — Chromium di VM nggak bisa mencapai internet
+> publik sama sekali (termasuk generativelanguage.googleapis.com). Rute yang
+> bisa: rekam di Chrome HP Principal (internet beneran, cloud fallback jalan)
+> atau jalankan app di cloud browser untuk screenshot tiap langkah. JANGAN
+> palsukan hasil (no fake summary, no fake on-device badge). Detail lengkap:
+> `video/VIDEO-STATUS.md`. Script rekaman: `video/record-rehearsal.py`.
+
+Perintah yang terbukti jalan (untuk re-record setelah Firebase project ada):
+
+```bash
+# 1. Kebijakan WebGL (wajib — Chromium nggak mau start tanpanya)
+printf 'hatch-webgl-all-origins-v1\n' > /tmp/webgl-policy.txt
+# 2. Xvfb + Chromium kiosk (file:// — localhost diblokir LNA checks)
+Xvfb :99 -screen 0 1280x720x24 &
+H=$(sha256sum /tmp/webgl-policy.txt | cut -d' ' -f1)
+DISPLAY=:99 /opt/meta-chromium/chrome --disable-gpu --no-sandbox \
+  --disable-dev-shm-usage --user-data-dir=/tmp/chrome-profile-xvfb \
+  --remote-debugging-port=9222 --window-size=1280,720 --kiosk \
+  --allow-file-access-from-files \
+  --hatch-webgl-allowed-domains-file=/tmp/webgl-policy.txt \
+  --hatch-webgl-allowed-domains-sha256=$H \
+  file:///tmp/baca-rehearsal/index.html &
+# 3. Build dengan path relatif + jalankan script rekaman
+npx vite build --base ./ --outDir /tmp/baca-rehearsal
+python3 video/record-rehearsal.py   # butuh websocket-client di venv scrapling
+# 4. Narasi (sudah jadi): video/narration-en-energetic-male.mp3 (32.2s)
+```
+
+## 9. Cek sebelum submit
 
 - [ ] `npm run build` sukses tanpa error
 - [ ] Badge on-device muncul di Chrome desktop (langkah 5.3)
