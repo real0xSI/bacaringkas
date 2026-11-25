@@ -1,10 +1,15 @@
 // Firebase init + App Check. No credentials live in this repo:
 // fill .env (see .env.example) from YOUR Firebase console web config.
-// App Check is REQUIRED by Firebase AI Logic; the debug provider is used
-// on localhost only (rules: debug tokens are accepted in submissions).
+// App Check is REQUIRED by Firebase AI Logic. Two paths:
+//  - reCAPTCHA Enterprise site key in .env -> ReCaptchaEnterpriseProvider.
+//  - otherwise -> App Check debug provider with a STABLE debug token from
+//    .env (VITE_APPCHECK_DEBUG_TOKEN). The contest allows debug tokens;
+//    register that token once in the console: Security > App Check > Apps >
+//    Manage debug tokens. In debug mode the SDK ignores the provider below,
+//    so the CustomProvider is only a fallback that throws if ever called.
 import { initializeApp } from "firebase/app";
 import { getAuth, signInAnonymously } from "firebase/auth";
-import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
+import { initializeAppCheck, ReCaptchaEnterpriseProvider, CustomProvider } from "firebase/app-check";
 import { getFirestore } from "firebase/firestore";
 import { getRemoteConfig } from "firebase/remote-config";
 
@@ -25,16 +30,29 @@ if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
 
 export const app = initializeApp(firebaseConfig);
 
-// Localhost: the debug flag makes the SDK use the App Check debug provider
-// instead of reCAPTCHA; the debug token printed in DevTools must be
-// registered in the Firebase console: Security > App Check > Apps > Manage debug tokens.
-if (import.meta.env.DEV) {
-  self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+const siteKey = import.meta.env.VITE_RECAPTCHA_ENTERPRISE_SITE_KEY;
+const debugToken = import.meta.env.VITE_APPCHECK_DEBUG_TOKEN;
+if (siteKey) {
+  initializeAppCheck(app, {
+    provider: new ReCaptchaEnterpriseProvider(siteKey),
+    isTokenAutoRefreshEnabled: true,
+  });
+} else {
+  // Stable debug token (registered once in the console) or, on localhost
+  // with no token at all, an auto-generated one (printed in DevTools).
+  if (debugToken) self.FIREBASE_APPCHECK_DEBUG_TOKEN = debugToken;
+  else if (import.meta.env.DEV) self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+  initializeAppCheck(app, {
+    provider: new CustomProvider({
+      getToken: async () => {
+        throw new Error(
+          "App Check: no reCAPTCHA key configured — register the debug token in the Firebase console (SETUP.md langkah 4)."
+        );
+      },
+    }),
+    isTokenAutoRefreshEnabled: true,
+  });
 }
-initializeAppCheck(app, {
-  provider: new ReCaptchaEnterpriseProvider(import.meta.env.VITE_RECAPTCHA_ENTERPRISE_SITE_KEY),
-  isTokenAutoRefreshEnabled: true,
-});
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
